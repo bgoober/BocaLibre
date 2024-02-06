@@ -1,5 +1,5 @@
 1. Base agent -- export huggingface token
-2. run agent.py
+2. run base_agent_client.py
 3. run alice_client.py
 4. boca_user_agent -- export alice.address as recipient, and t5_base agent
 5. run client.py
@@ -33,5 +33,4 @@ export RECIPIENT="agent1q0zeajdcr5s9jwcj7hcjsj9n3y9e2t0hr7d9dxpfrs07gm4gxk20kftj
 
 export T5_BASE_AGENT_ADDRESS="agent1qgj087vjxtp056jj3ww73gn87uj9pjd8ds53rn7ugx7se2qx9qpv55jlpcg"
 
-
-e
+poetry run python boca_client.py

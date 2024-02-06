@@ -1,4 +1,4 @@
-from uagents import Agent, Context
+from uagents import Agent, Context, Protocol
 from messages.wallet_messaging import WalletMessage
 from uagents.setup import fund_agent_if_low
 from messages.t5_base import TranslationRequest, TranslationResponse
@@ -32,7 +32,8 @@ user = Agent(
 # Check and top up the agent's fund if low
 fund_agent_if_low(user.wallet.address())
 
-
+# Create an instance of Protocol with a label "T5BaseModelUser"
+boca_agent = Protocol(name="BocaUserAgent", version="0.0.1")
 
 @user.on_event("startup")
 async def initialize_storage(ctx: Context):
@@ -56,6 +57,10 @@ async def handle_translation_response(ctx: Context, sender: str, response: Trans
     ctx.logger.info(f"Got translation: {response.translated_text}")
     await ctx.send_wallet_message(RECIPIENT, f"Original text: {INPUT_TEXT}\nTranslated text: {response.translated_text}")
     ctx.storage.set("TranslationDone", True)
+
+
+# publish_manifest will make the protocol details available on agentverse.
+user.include(boca_agent, publish_manifest=True)
 
 # Initiate the task
 if __name__ == "__main__":

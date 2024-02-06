@@ -12,10 +12,8 @@ alice = Agent(
 # Check and top up the agent's fund if low
 fund_agent_if_low(alice.wallet.address())
 
-
 # Create an instance of Protocol with a label "T5BaseModelUser"
 alice_recipient = Protocol(name="AliceRecipientTest", version="0.0.1")
-
 
 @alice.on_event("startup")
 async def startup(ctx: Context):
