@@ -79,7 +79,7 @@ async def handle_data(ctx: Context, sender: str, response: TranslationResponse):
 @boca_t5_base.on_message(model=TranslationResponse)
 # when the agent receives a translation response from the base agent, it will send a BocaMessage to the interlocutor using the input text and the translated text from the response
 async def send_boca_message(ctx: Context, sender: str, response: TranslationResponse):
-    await ctx.send(INTERLOCUTOR, BocaMessage(native=INPUT_TEXT, translation=response.translated_text))
+    await ctx.send(INTERLOCUTOR, BocaMessage(native=user_input, translation=response.translated_text))
     ctx.logger.info(f"Sent BocaMessage to interlocutor: {INTERLOCUTOR}")
 
 

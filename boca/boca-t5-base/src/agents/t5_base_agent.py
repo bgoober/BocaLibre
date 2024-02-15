@@ -23,7 +23,6 @@ HEADERS = {
 # Create an agent with predefined properties
 agent = Agent(
     name="t5_base_agent",
-    seed=HUGGING_FACE_ACCESS_TOKEN,
     port=8000,
     endpoint=["http://127.0.0.1:8000/submit"],
 )
