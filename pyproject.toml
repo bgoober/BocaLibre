@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "bocalibre"
 version = "0.1.0"
-description = "An agent-based messaging app designed for users using differing languages."
+description = "An agent-based messaging application designed for users using differing languages."
 authors = ["Ben <bgoober2@protonmail.com>"]
 license = "Apache 2"
 readme = "README.md"
