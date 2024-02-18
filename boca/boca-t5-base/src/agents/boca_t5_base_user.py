@@ -61,6 +61,7 @@ async def initialize_storage(ctx: Context):
 # Create an instance of Protocol with a label "BocaT5Base"
 boca_t5_base = Protocol(name="BocaT5Base", version="0.0.1")
 
+@boca_t5_base.on_event("")
 
 @boca_t5_base.on_interval(period=30, messages=TranslationRequest)
 async def transcript(ctx: Context):
