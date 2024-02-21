@@ -41,19 +41,19 @@ So we must have:
 
 User Agents:
 
-t5_base_hf
-Handles translation requests and responses to-and-from the remote HF model.
-t5_base_user
-Sends request to t5_base_hf agent.
-Handles responses from the t5_base_hf agent.
-Sends boca_message to chat partner upon response messages
-
+1. t5_base_hf
+    - Handles translation requests and responses to-and-from the remote HF model.
+2. t5_base_user
+    - Sends request to t5_base_hf agent.
+    - Handles responses from the t5_base_hf agent.
+    - Sends boca_message to chat partner upon response messages
 
 Non-user Agents:
 
-Match_Maker
-Matches chat participants
-Handles queue of participant chat requests
+1. Match_Maker
+    - Matches chat participants
+    - Handles queue of participant chat requests
+
 
 Flow:
 
