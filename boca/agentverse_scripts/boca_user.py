@@ -1,5 +1,6 @@
 # This agent script is designed to be used on the agentverse.ai website as a hosted agent.
 # As such, is does not import all of the necessary modules to run locally.
+# the boca user agent communicates with the t5_base agent, as well as the match_maker agent, as well as the another boca_user agent that they have been paired with for a chat (from the match_maker agent)
 
 if NATIVE_LANGUAGE == "":
     raise Exception("Provide a valid native language -- English, French, German, or Romanian.")
@@ -26,7 +27,7 @@ if user_input == "":
 INPUT_TEXT = "translate " + NATIVE_LANGUAGE + " to " + TARGET_LANGUAGE + ": " + user_input
 
 ### Define the t5_base protocol
-t5_base = Protocol()
+t5_base = Protocol(name="t5_base", version="0.0.1")
 
 @t5_base.on_interval(period=30, messages=TranslationRequest)
 async def transcript(ctx: Context):
@@ -46,8 +47,8 @@ async def handle_data(ctx: Context, sender: str, response: TranslationResponse):
 async def handle_error(ctx: Context, sender: str, error: Error):
     ctx.logger.info(f"Got error from uagent: {error}")
 
-### Define the boca protocol
-boca = Protocol()
+# Define the boca_user protocol
+boca_user = Protocol(name="boca_user", version="0.0.1")
 
 @boca.on_event("startup")
 async def request_chat(ctx: Context, BOCA_MATCH_MAKER, message=BocaChatRequest)
@@ -78,7 +79,7 @@ async def handle_boca_message(ctx: Context, sender: str, message: BocaMessage):
 # register the protocol with the agent
 agent.include(boca, t5_base)
 
-### Define the message models
+# Messages
 
 # to request to the hf agent
 class TranslationRequest(Model):
@@ -92,18 +93,28 @@ class TranslationResponse(Model):
 class Error(Model):
     error: str
 
-# message to send to whoever you are matched with
+class MatchRequest(Model):
+    native_language: str
+    target_language: str
+
+class MatchResponse(Model):
+    partner: str
+    partner_native_language: str
+
+class UpdateMatchRequest(Model):
+    native_language: str
+    target_language: str
+
+class UpdateMatchRequestResponse(Model):
+    success: bool
+
+class Message(Model):
+    message: str
+
+# Boca message to send to whoever you are matched with
 class BocaMessage(Model):
     native: str
     translation: str
 
-#BocaChatRequest Message Model
-class BocaChatRequest(Model):
-    native: str
-    translation: str
 
-#BocaChatRequest Response Messsage Model
-class BocaChatRequestResponse(Model):
-    native: str
-    translation: str
-    partner: str
+
