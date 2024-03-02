@@ -2,15 +2,17 @@
 
 An agent-based, peer-to-peer, chat/social messaging application, intended for users that speak differing native languages.
 
-1. Alice speaks Enligsh. Bob Speaks Spanish.
+1. Alice speaks Enligsh. Bob Speaks Spanish. They both want to chat with someone who speaks a different language, so they request a chat partner from the match_maker agent, which matches them.
 
-2. Alice types a message in English and sends it to Bob. The original message is sent by Alice's agent to an AI model for translation from English to Spanish.
+2. Alice types a message to Bob in English, and it is sent to the t5_base agent for translation to Spanish. She awaits the translated response from the t5_base agent.
 
-3. Bob receives Alice's original message in English, and waits for the translation.
+3. The TranslationResponse is returned to Alice from the t5_base agent, and a BocaMessage is sent to Bob, containing both the original native message in English, and the translated message in Spanish.
 
-4. The translation into Spanish is returned from the model, sent to Bob by Alice's agent, and rendered under the original message in English.
+4. Bob receives the BocaMessage from Alice, containing both the English, and Spanish versions of her message.
 
-5. Bob see's the translated message in Spanish, and replies in Spanish, and the cycle repeats for each message, by any user.
+5. Bob types his response in Spanish, it is translated by t5_base into English, and a new BocaMessage is sent back to Alice.
+
+6. The cycle repeats.
 
 ---
 
