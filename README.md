@@ -17,6 +17,9 @@ An agent-based, peer-to-peer, chat/social messaging application, intended for us
 User Agents:
 
 1. boca_user.py
+    - Handles MatchRequests and the match_maker protocol
+    - Handles t5_base TranslationRequests and the t5_base protocol
+    - Handles BocaMessage(s) and the boca_user protocol
 
 Non-user Agents:
 
