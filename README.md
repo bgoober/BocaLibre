@@ -1,6 +1,6 @@
 # BocaLibre
 
-An agent-based, peer-to-peer, chat/social messaging application, intended for users with differing languages.
+An agent-based, peer-to-peer, chat/social messaging application, intended for users that speak differing native languages.
 
 1. Alice speaks Enligsh. Bob Speaks Spanish.
 
@@ -28,21 +28,21 @@ Non-user Agents:
 
 ---
 
-Flow:
+Agentverse Flow:
 
-1. The user connects their Fetch.ai wallet.
-2. The user starts their t5_base_hf_agent.
-    - This requires a HuggingFace API key from the user.
-3. The user starts their t5_base_user agent.
-    - This requires the address of the user's t5_base_hf agent from step 2.
-    - This requires a declared native language and a translation language from the user.
-4. The user makes a chat request to the Match_Maker agent.
-5. The Match_Maker matches two users who have matching criteria to initiate a chat between the two agents.
-6. The Match_Maker agent responds to the user's agents with the address of the user's agent with whom they have been matched.
-7. A user inputs some text.
-8. The user's agent sends a TranslationRequest to the user's t5_base_hf agent.
-9. The user's t5_base_hf agent receives the request and makes a subsequent TranslationRequest to the remote HuggingFace t5-base model.
-10. The user's t5_base_hf agent awaits a response from the model.
-11. Upon receiving the translation response from the remote HF model, the t5_base_hf agent sends the TranslationResponse message to the user's t5_base_user agent.
-12. Upon receiving this TranslationResponse, the t5_base_user agent sends a BocaMessage to their chat partner.
-13. The partner's t5_base_user agent receives the BocaMessage and displays it.
+1. The user navigates to agentverse.ai
+2. The user creates a boca_user agent.
+3. The user supplies 3 things to their boca_user agent's .env file:
+    - Their native language
+    - Their target language (the native language of the person they'd like to have a conversation with (Which is also the language their native speech will be translated to)).
+    - Their HUGGINGFACE_API_KEY
+4. The user starts their boca_user agent.
+5. On startup, the user's agent requests a new chat partner from the match_maker agent.
+6. The user awaits a match from the match_maker agent.
+7. Once a match has been received from the match_maker agent, the user can type a message to their chat partner.
+8. The user types a message and it is sent to the t5_base agent to be translated into the target language/native language of their chat partner.
+9. The translated message is returned to the user.
+10. Both the native message and the translated message are sent to the user's chat partner using a BocaMessage.
+11. The chat partner's (user #2) boca_user agent receives the BocaMessage from the sender (user #1).
+12. The BocaMessage is displayed to the console of user #2.
+13. User #2, the partner, then replies in their native language, and the process repeats from step #8.
