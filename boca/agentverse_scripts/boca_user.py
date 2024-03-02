@@ -18,7 +18,7 @@ if TARGET_LANGUAGE == "":
 if BOCA_MATCH_MAKER == "":
     raise Exception("Provide the correct BOCA_MATCH_MAKER agent address.")
 
-# to be stored in the .env file
+# to be stored as an "Agent Secret"
 if HUGGING_FACE_ACCESS_TOKEN == "":
     raise Exception("Provide a HuggingFace API key for t5_base translation requests.")
 
@@ -112,6 +112,7 @@ agent.include(boca_user, t5_base)
 # to request to the hf agent
 class TranslationRequest(Model):
     text: str
+    api_key: str
 
 
 # response from the hf agent

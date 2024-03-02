@@ -46,3 +46,19 @@ async def handle_request(ctx: Context, sender: str, request: TranslationRequest)
 
 # publish_manifest will make the protocol details available on agentverse.
 agent.include(t5_base_agent, publish_manifest=True)
+
+
+# to request to the hf agent
+class TranslationRequest(Model):
+    text: str
+    api_key: str
+
+
+# response from the hf agent
+class TranslationResponse(Model):
+    translated_text: str
+
+
+# error from hf agent
+class Error(Model):
+    error: str
