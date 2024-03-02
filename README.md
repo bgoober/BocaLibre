@@ -14,46 +14,19 @@ An agent-based, peer-to-peer, chat/social messaging application, intended for us
 
 ---
 
-the user adds their hf_api key.
-
-the user inputs a message natively.
-
-the message is sent as a translation request to the HF model by the user's agent.
-    formatted: translate X to X: xxxx
-
-the model returns a translation to the user's agent.
-
-the user's agent handles the response, and transforms the reponse into the next message to be sent to the intended recipient address.
-
-the recipient agent handles the message, and logs it.
-
-the second user repeats from step 2.
-
-So we must have:
-    - api key input
-    - accept input from terminal, repeatably
-    - format input into translation request and send to hf model
-    - handle response from model
-    - format response into message and send to intended recipient
-    - handle message from sender and log to display
-
----
-
 User Agents:
 
-1. t5_base_hf
-    - Handles translation requests and responses to-and-from the remote HF model.
-2. t5_base_user
-    - Sends request to t5_base_hf agent.
-    - Handles responses from the t5_base_hf agent.
-    - Sends boca_message to chat partner upon response messages
+1. boca_user.py
 
 Non-user Agents:
 
-1. Match_Maker
+1. match_maker.py
     - Matches chat participants
     - Handles queue of participant chat requests
+2. t5_base.py
+    - Handles the TranslationRequest messages from the user's boca agent; just as in the t5_base integration from the uagents repository.
 
+---
 
 Flow:
 
