@@ -35,7 +35,7 @@ Agentverse Flow:
 3. The user supplies 3 things to their boca_user agent's .env file:
     - Their native language
     - Their target language (the native language of the person they'd like to have a conversation with (Which is also the language their native speech will be translated to)).
-    - Their HUGGINGFACE_API_KEY
+    - Their [HUGGINGFACE_API_KEY](https://huggingface.co/settings/tokens)
 4. The user starts their boca_user agent.
 5. On startup, the user's agent requests a new chat partner from the match_maker agent.
 6. The user awaits a match from the match_maker agent.
