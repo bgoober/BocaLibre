@@ -21,7 +21,7 @@ User Agents:
     - Handles t5_base TranslationRequests and the t5_base protocol
     - Handles BocaMessage(s) and the boca_user protocol
 
-Non-user Agents:
+Non-user Agents: (Registered services on agentverse.ai)
 
 1. match_maker.py
     - Matches chat participants
@@ -33,7 +33,7 @@ Non-user Agents:
 
 Agentverse Flow:
 
-1. The user navigates to agentverse.ai
+1. The user navigates to [agentverse.ai](https://agentverse.ai)
 2. The user creates a boca_user agent.
 3. The user supplies 3 things to their boca_user agent's .env file:
     - Their native language
