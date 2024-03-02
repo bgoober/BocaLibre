@@ -1,4 +1,4 @@
-# MatchMaker Protocol
+# BocaLibre MatchMaker Protocol, designed to be a hosted service on agentverse.ai
 
 boca_match_maker = Protocol(name="BocaMatchMaker", version="0.0.1")
 
