@@ -73,3 +73,8 @@ class Message(Model):
 
 # register the protocol with the agent
 agent.include(boca_match_maker, publish_manifest=True)
+
+
+# TODO: Review match_maker protocol
+# TODO: Test match_maker protocol
+    # register match_maker as a service on agentverse

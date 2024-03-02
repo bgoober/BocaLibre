@@ -32,16 +32,13 @@ t5_base = Protocol(name="t5_base", version="0.0.1")
 @t5_base.on_interval(period=30, messages=TranslationRequest)
 async def transcript(ctx: Context):
     TranslationDone = ctx.storage.get("TranslationDone")
-
     if not TranslationDone:
         await ctx.send(T5_BASE_AGENT_ADDRESS, TranslationRequest(text=INPUT_TEXT))
-
 
 @t5_base.on_message(model=TranslationResponse)
 async def handle_data(ctx: Context, sender: str, response: TranslationResponse):
     ctx.logger.info(f"Translated text:  {response.translated_text}")
     ctx.storage.set("TranslationDone", True)
-
 
 @t5_base.on_message(model=Error)
 async def handle_error(ctx: Context, sender: str, error: Error):
@@ -56,10 +53,10 @@ async def request_chat(ctx: Context, BOCA_MATCH_MAKER, message=BocaChatRequest)
     await ctx.send(BOCA_MATCH_MAKER, BocaChatRequest(native=NATIVE_LANGUAGE, translation=TARGET_LANGUAGE))
 
 @boca.on_message(model=BocaChatRequestResponse)
-async def handle_chat_request_response(ctx: Context, sender: str, message=BocaChatRequestResponse)
-    ctx.logger.info(f"Received chat request response.\n
-                      New chat partner: {message.partner}")
-    ctx.storage.set("partner": message.partner)
+async def handle_chat_request_response(ctx: Context, sender: str, message=BocaChatRequestResponse):
+    ctx.logger.info(f"Received chat request response.\n"
+                    f"New chat partner: {message.partner}")
+    ctx.storage.set("partner", message.partner)
     
 @boca.on_message(model=TranslationResponse)
 # when the agent receives a translation response from the base agent, it will send a BocaMessage to the BOCA_LIBRE using the input text and the translated text from the response
@@ -118,3 +115,17 @@ class BocaMessage(Model):
 
 
 
+# TODO: write boca_user protocol
+    # send match request message to match_maker
+    # hanlde match response message from match_maker
+    # send update match request message to match_maker
+    # handle update match request response from match_maker
+        # store match response partner in storage
+    # send boca message to partner agent 
+    # handle boca message from partner agent
+        # store message in storage
+
+# TODO: Review t5_base protocol
+    # send translation request message to t5_base
+    # handle translation response message from t5_base
+    # handle error message from t5_base
