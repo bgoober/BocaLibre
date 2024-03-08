@@ -1,5 +1,5 @@
 from uagents import Bureau
-from agents.interlocutor import interlocutor
+from agents.match_maker_agent import agent as match_m
 
 if __name__ == "__main__":
     bureau = Bureau(endpoint="http://127.0.0.1:8002/submit", port=8002)
