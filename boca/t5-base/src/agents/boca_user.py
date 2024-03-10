@@ -3,8 +3,22 @@ from messages.t5_base import TranslationRequest, TranslationResponse, Error
 from uagents.setup import fund_agent_if_low
 import os
 
+NATIVE_LANGUAGE = "english"
+
+# if the user did not input one of the options above, ignoring case, raise an exception
+if NATIVE_LANGUAGE.lower() not in ["english", "french", "german", "romanian"]:
+    raise Exception("Please provide a valid language.")
+
+TARGET_LANGUAGE = "french"
+
+if TARGET_LANGUAGE.lower() not in ["english", "french", "german", "romanian"]:
+    raise Exception("Please provide a valid language.")
+
+if NATIVE_LANGUAGE == TARGET_LANGUAGE:
+    raise Exception("Native Language and Target Language can not be the same.")
+
 # text you want to translate
-INPUT_TEXT = "Who are you?"
+user_input = input("input:")
 
 T5_BASE_AGENT_ADDRESS = os.getenv("T5_BASE_AGENT_ADDRESS", "T5_BASE_AGENT_ADDRESS")
 

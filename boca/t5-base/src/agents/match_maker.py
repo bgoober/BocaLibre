@@ -6,6 +6,7 @@ from messages.match_maker import (
     UpdateMatchRequestResponse,
     Message,
 )
+from uagents.setup import fund_agent_if_low
 
 
 match_maker = Agent(
@@ -15,12 +16,6 @@ match_maker = Agent(
 # BocaLibre MatchMaker Protocol, designed to be a hosted service on agentverse.ai
 
 boca_match_maker = Protocol(name="BocaMatchMaker", version="0.0.1")
-
-
-@boca_match_maker.on_event("startup")
-async def clear_set_storage(ctx: Context):
-    ctx.storage.clear()
-    ctx.storage.set("match_queue", [])
 
 
 # upon receiving a MatchRequest message, add the agent adress of the sender, the native language and the target language from the sender's message to the match_queue
@@ -100,3 +95,10 @@ async def handle_update_match_request(
 
 # register the protocol with the agent
 match_maker.include(boca_match_maker, publish_manifest=True)
+
+fund_agent_if_low(match_maker.wallet.address())
+
+@match_maker.on_event("startup")
+async def clear_set_storage(ctx: Context):
+    ctx.storage.clear()
+    ctx.storage.set("match_queue", [])
