@@ -1,5 +1,6 @@
 from uagents import Agent, Context, Protocol
 from messages.t5_base import TranslationRequest, TranslationResponse, Error
+from protocols.t5_base_agent import t5_base_agent
 from uagents.setup import fund_agent_if_low
 import os
 import requests
@@ -48,20 +49,6 @@ async def translate_text(ctx: Context, sender: str, input_text: str):
     except Exception as ex:
         await ctx.send(sender, Error(error=f"Exception Occurred: {ex}"))
         return
-
-
-# Create an instance of Protocol with a label "T5BaseModelAgent"
-t5_base_agent = Protocol(name="T5BaseModelAgent", version="0.0.1")
-
-
-@t5_base_agent.on_message(
-    model=TranslationRequest, replies={TranslationResponse, Error}
-)
-async def handle_request(ctx: Context, sender: str, request: TranslationRequest):
-    # Log the request details
-    ctx.logger.info(f"Got request from  {sender}")
-
-    await translate_text(ctx, sender, request.text)
 
 
 # publish_manifest will make the protocol details available on agentverse.

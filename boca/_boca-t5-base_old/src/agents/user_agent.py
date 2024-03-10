@@ -4,17 +4,13 @@ from messages.boca_message import BocaMessage
 from uagents.setup import fund_agent_if_low
 import os
 
-NATIVE_LANGUAGE = input(
-    "What is your native language? -- English, French, German, or Romanian?"
-)
+NATIVE_LANGUAGE = "engligh"
 
 # if the user did not input one of the options above, ignoring case, raise an exception
 if NATIVE_LANGUAGE.lower() not in ["english", "french", "german", "romanian"]:
     raise Exception("Please provide a valid language.")
 
-TARGET_LANGUAGE = input(
-    "What is your target language? -- English, French, German, or Romanian?"
-)
+TARGET_LANGUAGE = "french"
 
 if TARGET_LANGUAGE.lower() not in ["english", "french", "german", "romanian"]:
     raise Exception("Please provide a valid language.")
@@ -23,7 +19,7 @@ if NATIVE_LANGUAGE == TARGET_LANGUAGE:
     raise Exception("Native Language and Target Language can not be the same.")
 
 # text you want to translate
-user_input = input("Type a syntactically correct message in your native language.")
+user_input = "Hello, how are you today? Would you like to go for a walk in the park?"
 
 # check if user input is empty, and if it is clean, meaning no malicious activity is attempted in terms of security violations
 if user_input == "":
@@ -40,13 +36,13 @@ if T5_BASE_AGENT_ADDRESS == "T5_BASE_AGENT_ADDRESS":
         "You need to provide an T5_BASE_AGENT_ADDRESS, by exporting env, check README file"
     )
 
-INTERLOCUTOR = os.getenv(
-    "INTERLOCUTOR", "INTERLOCUTOR"
+PARTNER = os.getenv(
+    "PARTNER", "PARTNER"
 )  # the address of the agent that we are going to send our BocaMessage to
 
-if INTERLOCUTOR == "INTERLOCUTOR":
+if PARTNER == "PARTNER":
     raise Exception(
-        "You need to provide an INTERLOCUTOR, by exporting env, check README file"
+        "You need to provide an PARTNER, by exporting env, check README file"
     )
 
 # Define user agent with specified parameters
@@ -88,10 +84,10 @@ async def handle_data(ctx: Context, sender: str, response: TranslationResponse):
 # when the agent receives a translation response from the base agent, it will send a BocaMessage to the interlocutor using the input text and the translated text from the response
 async def send_boca_message(ctx: Context, sender: str, response: TranslationResponse):
     await ctx.send(
-        INTERLOCUTOR,
+        PARTNER,
         BocaMessage(native=user_input, translation=response.translated_text),
     )
-    ctx.logger.info(f"Sent BocaMessage to interlocutor: {INTERLOCUTOR}")
+    ctx.logger.info(f"Sent BocaMessage to interlocutor: {PARTNER}")
 
 
 @boca_t5_base.on_message(model=BocaMessage)

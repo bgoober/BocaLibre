@@ -1,18 +1,12 @@
-from uagents import Agent, Context, Protocol
+from uagents import Protocol, Context
+
 from messages.match_maker import (
     MatchRequest,
-    MatchResponse,
     UpdateMatchRequest,
     UpdateMatchRequestResponse,
+    MatchResponse,
     Message,
 )
-
-agent = Agent(
-    name="boca_match_maker_agent",
-    port=8000,
-    endpoint=["http://127.0.0.1:8000/submit"],
-)
-
 
 # BocaLibre MatchMaker Protocol, designed to be a hosted service on agentverse.ai
 
@@ -98,12 +92,3 @@ async def handle_update_match_request(
                 f"Agent {sender} not found in match queue. Please send a MatchRequest to add your request to the queue."
             )
             ctx.send(sender, UpdateMatchRequestResponse(success=False))
-
-
-# register the protocol with the agent
-agent.include(boca_match_maker, publish_manifest=True)
-
-
-agent.run()
-
-# TODO: test locally, review functions
