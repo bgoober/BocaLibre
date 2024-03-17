@@ -21,6 +21,7 @@ boca_match_maker = Protocol(name="BocaMatchMaker", version="0.0.1")
 # upon receiving a MatchRequest message, add the agent adress of the sender, the native language and the target language from the sender's message to the match_queue
 @boca_match_maker.on_message(model=MatchRequest)
 async def handle_match_request(ctx: Context, sender: str, message: MatchRequest):
+    ctx.logger.info(f"Received MatchRequest from {sender}.")
     match_queue = ctx.storage.get("match_queue")
     # check if the sender agent is already in the match_queue, and if so, reject the request
     for match in match_queue:
