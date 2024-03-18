@@ -169,3 +169,6 @@ async def handle_error(ctx: Context, sender: str, error: Error):
 
 # publish_manifest will make the protocol details available on agentverse.
 user.include(t5_base_user, publish_manifest=True)
+
+
+# TODO: Refactor the user agent to solicit input() from the user after a BocaMessage has been received, and/or if 5 minutes have passed from the last BocaMessage received.
