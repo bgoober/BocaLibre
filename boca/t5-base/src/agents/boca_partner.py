@@ -1,9 +1,49 @@
-from uagents import Agent, Context, Protocol
-from messages.t5_base import TranslationRequest, TranslationResponse, Error
-from messages.match_maker import MatchRequest
-from messages.boca_libre import BocaMessage
+from uagents import Agent, Context, Protocol, Model
 from uagents.setup import fund_agent_if_low
 import os
+
+### Messages ###
+
+
+class TranslationRequest(Model):
+    text: str
+
+
+class TranslationResponse(Model):
+    translated_text: str
+
+
+class Error(Model):
+    error: str
+
+
+class MatchRequest(Model):
+    native_language: str
+    target_language: str
+
+
+class MatchResponse(Model):
+    partner: str
+    partner_native_language: str
+
+
+class UpdateMatchRequest(Model):
+    native_language: str
+    target_language: str
+
+
+class UpdateMatchRequestResponse(Model):
+    success: bool
+
+
+class Message(Model):
+    message: str
+
+
+class BocaMessage(Model):
+    native: str
+    translation: str
+
 
 NATIVE_LANGUAGE = "french"
 
@@ -20,7 +60,7 @@ if NATIVE_LANGUAGE == TARGET_LANGUAGE:
     raise Exception("Native Language and Target Language can not be the same.")
 
 # text you want to translate
-user_input = "Hello, how are you today? Would you like to go for a walk in the park?"
+user_input = "Hello, I am doing quite well. How are you?"
 
 T5_BASE_AGENT_ADDRESS = os.getenv("T5_BASE_AGENT_ADDRESS", "T5_BASE_AGENT_ADDRESS")
 
@@ -53,6 +93,7 @@ fund_agent_if_low(partner.wallet.address())
 async def initialize_storage(ctx: Context):
     ctx.storage.set("TranslationDone", False)
 
+
 # decorate user with a startup event to send a MatchRequest message to the match_maker agent
 @partner.on_event("startup")
 async def request_chat(ctx: Context, BOCA_MATCH_MAKER, message=MatchRequest):
@@ -60,8 +101,9 @@ async def request_chat(ctx: Context, BOCA_MATCH_MAKER, message=MatchRequest):
     await ctx.send(
         BOCA_MATCH_MAKER,
         MatchRequest(native=NATIVE_LANGUAGE, translation=TARGET_LANGUAGE),
-   )
-    
+    )
+
+
 @partner.on_message(model=BocaMessage)
 async def handle_boca_message(ctx: Context, sender: str, message: BocaMessage):
     ctx.logger.info(
@@ -71,6 +113,7 @@ async def handle_boca_message(ctx: Context, sender: str, message: BocaMessage):
     messages = ctx.storage.get("messages", [])
     messages.append(message)
     ctx.storage.set("messages", messages)
+
 
 # Create an instance of Protocol with a label "T5BaseModelUser"
 t5_base_user = Protocol(name="T5BaseModelUser", version="0.0.1")
@@ -87,14 +130,13 @@ async def transcript(ctx: Context):
 @t5_base_user.on_message(model=TranslationResponse)
 # when the agent receives a translation response from the base agent, it will send a BocaMessage to the interlocutor using the input text and the translated text from the response
 async def send_boca_message(ctx: Context, sender: str, response: TranslationResponse):
+    # get partner from storage and send partner the BocaMessage
+    PARTNER = ctx.storage.get("partner")
     await ctx.send(
         PARTNER,
         BocaMessage(native=user_input, translation=response.translated_text),
     )
     ctx.logger.info(f"Sent BocaMessage to interlocutor: {PARTNER}")
-
-
-
 
 
 @t5_base_user.on_message(model=Error)
@@ -105,6 +147,5 @@ async def handle_error(ctx: Context, sender: str, error: Error):
 # publish_manifest will make the protocol details available on agentverse.
 partner.include(t5_base_user, publish_manifest=True)
 
-# Initiate the task
-if __name__ == "__main__":
-    t5_base_user.run()
+
+partner.run()

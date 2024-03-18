@@ -1,6 +1,17 @@
 from uagents import Protocol, Context
-from messages.boca_message import BocaMessage, MatchRequest, MatchResponse, TranslationResponse
-from agents.user_agent import NATIVE_LANGUAGE, TARGET_LANGUAGE, BOCA_MATCH_MAKER, user_input, partner
+from messages.boca_message import (
+    BocaMessage,
+    MatchRequest,
+    MatchResponse,
+    TranslationResponse,
+)
+from agents.user_agent import (
+    NATIVE_LANGUAGE,
+    TARGET_LANGUAGE,
+    BOCA_MATCH_MAKER,
+    user_input,
+    partner,
+)
 
 
 # Define the boca_user protocol

@@ -10,5 +10,9 @@
     "boca_user": {
         "identity_key": "6cc03d084bd4afd5a04c785c3a286cb1d45b15963f26a5a4a9e1be4ac509c6b2",
         "wallet_key": "z+f6nfNwfyJRL8eAe2eJ8OPtLb/ABHx0drSGfpCjzBU="
+    },
+    "simple_agent": {
+        "identity_key": "e04b64dc17b08e241ecf10eabd13093e787ac964fe3488af1d31766339547e6c",
+        "wallet_key": "i6Do5uEhg6SrbqbI2o7zJKNtprNO9tTxfwc9PAIo2IQ="
     }
 }

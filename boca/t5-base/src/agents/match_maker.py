@@ -1,12 +1,49 @@
-from uagents import Agent, Protocol, Context
-from messages.match_maker import (
-    MatchRequest,
-    MatchResponse,
-    UpdateMatchRequest,
-    UpdateMatchRequestResponse,
-    Message,
-)
+from uagents import Agent, Protocol, Context, Model
+
 from uagents.setup import fund_agent_if_low
+
+
+### Messages ###
+
+
+class TranslationRequest(Model):
+    text: str
+
+
+class TranslationResponse(Model):
+    translated_text: str
+
+
+class Error(Model):
+    error: str
+
+
+class MatchRequest(Model):
+    native_language: str
+    target_language: str
+
+
+class MatchResponse(Model):
+    partner: str
+    partner_native_language: str
+
+
+class UpdateMatchRequest(Model):
+    native_language: str
+    target_language: str
+
+
+class UpdateMatchRequestResponse(Model):
+    success: bool
+
+
+class Message(Model):
+    message: str
+
+
+class BocaMessage(Model):
+    native: str
+    translation: str
 
 
 match_maker = Agent(
@@ -99,7 +136,11 @@ match_maker.include(boca_match_maker, publish_manifest=True)
 
 fund_agent_if_low(match_maker.wallet.address())
 
+
 @match_maker.on_event("startup")
 async def clear_set_storage(ctx: Context):
     ctx.storage.clear()
     ctx.storage.set("match_queue", [])
+
+
+match_maker.run()

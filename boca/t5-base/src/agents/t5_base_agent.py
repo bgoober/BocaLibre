@@ -1,8 +1,51 @@
-from uagents import Agent, Context, Protocol
-from messages.t5_base import TranslationRequest, TranslationResponse, Error
+from uagents import Agent, Context, Protocol, Model
 from uagents.setup import fund_agent_if_low
 import os
 import requests
+
+
+### Messages ###
+
+
+class TranslationRequest(Model):
+    text: str
+
+
+class TranslationResponse(Model):
+    translated_text: str
+
+
+class Error(Model):
+    error: str
+
+
+class MatchRequest(Model):
+    native_language: str
+    target_language: str
+
+
+class MatchResponse(Model):
+    partner: str
+    partner_native_language: str
+
+
+class UpdateMatchRequest(Model):
+    native_language: str
+    target_language: str
+
+
+class UpdateMatchRequestResponse(Model):
+    success: bool
+
+
+class Message(Model):
+    message: str
+
+
+class BocaMessage(Model):
+    native: str
+    translation: str
+
 
 # Get the HUGGING_FACE_ACCESS_TOKEN from environment variable or default to a placeholder string if not found.
 HUGGING_FACE_ACCESS_TOKEN = os.getenv(
@@ -42,6 +85,7 @@ async def translate_text(ctx: Context, sender: str, input_text: str):
             await ctx.send(
                 sender, TranslationResponse(translated_text=f"{response.json()}")
             )
+            ctx.logger.info(f"payload: {payload}")
             return
         else:
             await ctx.send(sender, Error(error=f"Error: {response.json()}"))
@@ -60,7 +104,7 @@ t5_base_agent = Protocol(name="T5BaseModelAgent", version="0.0.1")
 )
 async def handle_request(ctx: Context, sender: str, request: TranslationRequest):
     # Log the request details
-    ctx.logger.info(f"Got request from  {sender}")
+    ctx.logger.info(f"Got request from  {sender}: {request.text}")
 
     await translate_text(ctx, sender, request.text)
 
@@ -68,6 +112,5 @@ async def handle_request(ctx: Context, sender: str, request: TranslationRequest)
 # publish_manifest will make the protocol details available on agentverse.
 agent.include(t5_base_agent, publish_manifest=True)
 
-# Define the main entry point of the application
-if __name__ == "__main__":
-    t5_base_agent.run()
+
+agent.run()
