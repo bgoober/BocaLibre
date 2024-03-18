@@ -11,7 +11,7 @@ class TranslationRequest(Model):
 
 
 class TranslationResponse(Model):
-    translated_text: str
+    text: str
 
 
 class Error(Model):
@@ -141,6 +141,3 @@ fund_agent_if_low(match_maker.wallet.address())
 async def clear_set_storage(ctx: Context):
     ctx.storage.clear()
     ctx.storage.set("match_queue", [])
-
-
-match_maker.run()

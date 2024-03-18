@@ -1,6 +1,8 @@
 from uagents import Agent, Context, Protocol, Model
 from uagents.setup import fund_agent_if_low
 import os
+import ast
+
 
 ### Messages ###
 
@@ -10,7 +12,7 @@ class TranslationRequest(Model):
 
 
 class TranslationResponse(Model):
-    translated_text: str
+    text: str
 
 
 class Error(Model):
@@ -45,13 +47,15 @@ class BocaMessage(Model):
     translation: str
 
 
-NATIVE_LANGUAGE = "english"
+# NOTE: The first letter of the native language and target language variables MUST be capitalized or the AI model will not properly understand the request.
+NATIVE_LANGUAGE = "English"
 
 # if the user did not input one of the options above, ignoring case, raise an exception
 if NATIVE_LANGUAGE.lower() not in ["english", "french", "german", "romanian"]:
     raise Exception("Please provide a valid language.")
 
-TARGET_LANGUAGE = "french"
+# NOTE: The first letter of the native language and target language variables MUST be capitalized or the AI model will not properly understand the request.
+TARGET_LANGUAGE = "French"
 
 if TARGET_LANGUAGE.lower() not in ["english", "french", "german", "romanian"]:
     raise Exception("Please provide a valid language.")
@@ -60,7 +64,7 @@ if NATIVE_LANGUAGE == TARGET_LANGUAGE:
     raise Exception("Native Language and Target Language can not be the same.")
 
 # text you want to translate
-user_input = "Hello, how are you today?"
+user_input = """This image section from an infrared recording by the Spitzer telescope shows a "family portrait" of countless generations of stars: the oldest stars are seen as blue dots, while more difficult to identify are the pink-coloured "new-borns" in the star delivery room."""
 
 T5_BASE_AGENT_ADDRESS = os.getenv("T5_BASE_AGENT_ADDRESS", "T5_BASE_AGENT_ADDRESS")
 
@@ -139,15 +143,23 @@ async def transcript(ctx: Context):
 
 
 @t5_base_user.on_message(model=TranslationResponse)
-# when the agent receives a translation response from the base agent, it will send a BocaMessage to the interlocutor using the input text and the translated text from the response
 async def send_boca_message(ctx: Context, sender: str, response: TranslationResponse):
-    # get partner from storage and send partner the BocaMessage
-    # PARTNER = ctx.storage.get("partner")
-    await ctx.send(
-        PARTNER,
-        BocaMessage(native=user_input, translation=response.translated_text),
-    )
-    ctx.logger.info(f"Sent BocaMessage to {PARTNER}")
+    ctx.logger.info(f"{response.text}")
+
+    # Convert the response text to a list containing a dictionary
+    response_data = ast.literal_eval(response.text)
+
+    # Extract the translated text
+    translation = response_data[0]["translation_text"]
+
+    ctx.logger.info(f"Translation: {translation}")
+
+    if PARTNER:
+        await ctx.send(
+            PARTNER,
+            BocaMessage(native=INPUT_TEXT, translation=translation),
+        )
+        ctx.logger.info(f"Sent BocaMessage to {PARTNER}")
 
 
 @t5_base_user.on_message(model=Error)
@@ -157,6 +169,3 @@ async def handle_error(ctx: Context, sender: str, error: Error):
 
 # publish_manifest will make the protocol details available on agentverse.
 user.include(t5_base_user, publish_manifest=True)
-
-
-user.run()

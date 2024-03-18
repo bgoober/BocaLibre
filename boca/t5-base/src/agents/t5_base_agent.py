@@ -12,7 +12,7 @@ class TranslationRequest(Model):
 
 
 class TranslationResponse(Model):
-    translated_text: str
+    text: str
 
 
 class Error(Model):
@@ -82,10 +82,9 @@ async def translate_text(ctx: Context, sender: str, input_text: str):
     try:
         response = requests.post(T5_BASE_URL, headers=HEADERS, json=payload)
         if response.status_code == 200:
-            await ctx.send(
-                sender, TranslationResponse(translated_text=f"{response.json()}")
-            )
+            await ctx.send(sender, TranslationResponse(text=f"{response.json()}"))
             ctx.logger.info(f"payload: {payload}")
+            ctx.logger.info(f"Response: {response.text}")
             return
         else:
             await ctx.send(sender, Error(error=f"Error: {response.json()}"))
@@ -111,6 +110,3 @@ async def handle_request(ctx: Context, sender: str, request: TranslationRequest)
 
 # publish_manifest will make the protocol details available on agentverse.
 agent.include(t5_base_agent, publish_manifest=True)
-
-
-agent.run()

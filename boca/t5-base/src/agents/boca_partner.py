@@ -10,7 +10,7 @@ class TranslationRequest(Model):
 
 
 class TranslationResponse(Model):
-    translated_text: str
+    text: str
 
 
 class Error(Model):
@@ -146,6 +146,3 @@ async def handle_error(ctx: Context, sender: str, error: Error):
 
 # publish_manifest will make the protocol details available on agentverse.
 partner.include(t5_base_user, publish_manifest=True)
-
-
-partner.run()

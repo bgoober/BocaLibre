@@ -25,6 +25,3 @@ async def say_address(ctx: Context):
 async def handle_boca_message(ctx: Context, sender: str, message: BocaMessage):
     ctx.logger.info(f"Received BocaMessage from {sender}")
     ctx.logger.info(message)
-
-
-simple.run()
