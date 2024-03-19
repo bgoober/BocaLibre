@@ -9,10 +9,12 @@ import requests
 
 class TranslationRequest(Model):
     text: str
+    id: str
 
 
 class TranslationResponse(Model):
     text: str
+    id: str
 
 
 class Error(Model):
@@ -74,7 +76,7 @@ agent = Agent(
 fund_agent_if_low(agent.wallet.address())
 
 
-async def translate_text(ctx: Context, sender: str, input_text: str):
+async def translate_text(ctx: Context, sender: str, input_text: str, input_id: str):
     # Prepare the data
     payload = {"inputs": input_text}
 
@@ -82,7 +84,9 @@ async def translate_text(ctx: Context, sender: str, input_text: str):
     try:
         response = requests.post(T5_BASE_URL, headers=HEADERS, json=payload)
         if response.status_code == 200:
-            await ctx.send(sender, TranslationResponse(text=f"{response.json()}"))
+            await ctx.send(
+                sender, TranslationResponse(text=f"{response.json()}", id=input_id)
+            )
             ctx.logger.info(f"payload: {payload}")
             ctx.logger.info(f"Response: {response.text}")
             return
@@ -105,7 +109,7 @@ async def handle_request(ctx: Context, sender: str, request: TranslationRequest)
     # Log the request details
     ctx.logger.info(f"Got request from  {sender}: {request.text}")
 
-    await translate_text(ctx, sender, request.text)
+    await translate_text(ctx, sender, request.text, request.id)
 
 
 # publish_manifest will make the protocol details available on agentverse.
