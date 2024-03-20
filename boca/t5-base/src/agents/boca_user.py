@@ -1,6 +1,6 @@
 from uagents import Agent, Context, Protocol, Model
 from uagents.setup import fund_agent_if_low
-import os, ast, threading, time, uuid, asyncio
+import os, ast, threading, uuid, asyncio, math
 
 
 ### Messages ###
@@ -92,76 +92,81 @@ user = Agent(
 fund_agent_if_low(user.wallet.address())
 
 
+def prompt_for_user_input(ctx):
+    while True:
+        user_input = input("Enter a message: ")
+        asyncio.run(handle_user_input(ctx, user_input))
+
+
+# Start the thread in the startup event
 @user.on_event("startup")
 async def startup(ctx: Context):
-    # Start a new thread that prompts for user input every 30 seconds
-    threading.Thread(target=prompt_user_input_periodically, args=(ctx,)).start()
+    # Start a new thread that prompts for user input
+    threading.Thread(target=prompt_for_user_input, args=(ctx,), daemon=True).start()
 
 
-@user.on_event("startup")
-async def prompt_user_input(ctx: Context):
-    # Prompt the user for input
-    user_input = input("Enter a message: ")
-
-    # Generate a unique identifier for this input
+async def handle_user_input(ctx: Context, user_input: str):
+    # Generate a unique UUID for the new user input
     input_id = str(uuid.uuid4())
 
-    # Try to get the dictionary of user inputs from the context storage
-    user_inputs = ctx.storage.get("user_inputs") or {}
+    # Try to get the dictionaries of user inputs from the context storage
+    user_inputs_queue = ctx.storage.get("user_inputs_queue")
+    if user_inputs_queue is None:
+        user_inputs_queue = {}
 
-    # Store the user's input in the dictionary with the unique identifier
-    user_inputs[input_id] = user_input
+    user_inputs_store = ctx.storage.get("user_inputs_store")
+    if user_inputs_store is None:
+        user_inputs_store = {}
 
-    # Save the dictionary of user inputs back to the context storage
-    ctx.storage.set("user_inputs", user_inputs)
+    # Add the new user input to the dictionaries with the UUID as the key
+    user_inputs_queue[input_id] = user_input
+    user_inputs_store[input_id] = user_input
+
+    # Save the updated dictionaries back to the context storage
+    ctx.storage.set("user_inputs_queue", user_inputs_queue)
+    ctx.storage.set("user_inputs_store", user_inputs_store)
 
     # Format the input text
     input_text = (
         "translate " + NATIVE_LANGUAGE + " to " + TARGET_LANGUAGE + ": " + user_input
     )
 
-    # Send a TranslationRequest with the user's input and the unique identifier
-    await ctx.send(
-        T5_BASE_AGENT_ADDRESS, TranslationRequest(text=input_text, id=input_id)
-    )
+    while True:
+        try:
+            # Send the TranslationRequest message to the t5_base model
+            if T5_BASE_AGENT_ADDRESS:
+                await ctx.send(
+                    T5_BASE_AGENT_ADDRESS,
+                    TranslationRequest(id=input_id, text=input_text),
+                )
+                ctx.logger.info(f"Sent TranslationRequest to {T5_BASE_AGENT_ADDRESS}")
 
+            # Remove the input from the queue
+            del user_inputs_queue[input_id]
+            ctx.storage.set("user_inputs_queue", user_inputs_queue)
 
-async def wait_for_user_input(ctx):
-    # Wait for 30 seconds
-    await asyncio.sleep(30)
+            break
+        except Exception as e:
+            # If the request is not successful due to rate limiting, wait for the estimated time and then try again
+            error_message = str(e)
+            if (
+                "Error: {'error': 'Model google-t5/t5-base is currently loading"
+                in error_message
+            ):
+                estimated_time = float(
+                    error_message.split("'estimated_time': ")[1].split("}")[0]
+                )
+                await asyncio.sleep(math.ceil(estimated_time))
+            else:
+                raise e
 
-    # Prompt the user for input
-    user_input = input("Enter a message: ")
-
-    # Generate a unique identifier for this input
-    input_id = str(uuid.uuid4())
-
-    # Try to get the dictionary of user inputs from the context storage
-    try:
-        user_inputs = ctx.storage.get("user_inputs")
-    except KeyError:
-        # If the key is not found, use an empty dictionary as the default value
-        user_inputs = {}
-
-    # Store the user's input in the dictionary with the unique identifier
-    user_inputs[input_id] = user_input
-
-    # Save the dictionary of user inputs back to the context storage
-    ctx.storage.set("user_inputs", user_inputs)
-
-    # Format the input text
-    input_text = (
-        "translate " + NATIVE_LANGUAGE + " to " + TARGET_LANGUAGE + ": " + user_input
-    )
-
-    # Send a TranslationRequest with the user's input
-    await ctx.send(T5_BASE_AGENT_ADDRESS, TranslationRequest(text=input_text, id=input_id))
+    return input_id
 
 
 @user.on_message(model=BocaMessage)
 async def handle_boca_message(ctx: Context, sender: str, message: BocaMessage):
     ctx.logger.info(
-        f"Received BocaMessage from {sender}: {message.native} -> {message.translation}"
+        f"Received BocaMessage from {sender}: {message.native} --> {message.translation}"
     )
     # add the BocaMessage to the storage as a list with indices for each message received chronologically
     try:
@@ -171,18 +176,6 @@ async def handle_boca_message(ctx: Context, sender: str, message: BocaMessage):
         messages = []
     messages.append(message)
     ctx.storage.set("messages", messages)
-
-    # Prompt for user input immediately
-    wait_for_user_input(ctx)
-
-
-def prompt_user_input_periodically(ctx):
-    while True:
-        # Wait for 30 seconds
-        time.sleep(30)
-
-        # Prompt the user for input
-        wait_for_user_input(ctx)
 
 
 # decorate the user agent to store the partner from the MatchResponse message from the match_maker agent
@@ -207,14 +200,12 @@ async def handle_boca_message(ctx: Context, sender: str, response: TranslationRe
     translation = response_data[0]["translation_text"]
 
     # Try to get the dictionary of user inputs from the context storage
-    try:
-        user_inputs = ctx.storage.get("user_inputs")
-    except KeyError:
-        # If the key is not found, use an empty dictionary as the default value
-        user_inputs = {}
+    user_inputs_store = ctx.storage.get("user_inputs_store")
+    if user_inputs_store is None:
+        user_inputs_store = {}
 
     # Retrieve the native text from the dictionary using the identifier from the response
-    native_text = user_inputs.get(response.id)
+    native_text = user_inputs_store.get(response.id)
 
     if PARTNER:
         await ctx.send(
@@ -231,3 +222,9 @@ async def handle_error(ctx: Context, sender: str, error: Error):
 
 # publish_manifest will make the protocol details available on agentverse.
 user.include(t5_base_user, publish_manifest=True)
+
+
+# TODO: Add a message queue for new user input.
+# Add the ability to handle the t5_base rate limit error messages, then send those messages to the user
+# once the rate limit has been lifted. One message at a time.
+# OR send ALL the messages, and refactor t5_base to handle multiple messages at once in a single payload.

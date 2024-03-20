@@ -155,7 +155,9 @@ async def wait_for_user_input(ctx):
     )
 
     # Send a TranslationRequest with the user's input
-    await ctx.send(T5_BASE_AGENT_ADDRESS, TranslationRequest(text=input_text, id=input_id))
+    await ctx.send(
+        T5_BASE_AGENT_ADDRESS, TranslationRequest(text=input_text, id=input_id)
+    )
 
 
 @user.on_message(model=BocaMessage)

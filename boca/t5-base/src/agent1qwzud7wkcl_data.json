@@ -1,0 +1,23 @@
+{
+    "user_inputs_queue": {},
+    "user_inputs_store": {
+        "8f40da79-1e11-4614-bf8c-c25843af8c42": "hello, how are you?",
+        "e828335c-33e2-4c55-b1da-077677dd1c10": "I wonder if this is working now",
+        "0f7d3071-0ad4-40db-8d4e-e0613f783e1c": "maybe can you read this?",
+        "6108d4a9-b0dd-45ea-9712-e98f2de1ea2a": "testing, testing",
+        "319ca04b-b3d2-410e-946f-2e9c7ad409c4": "waiting for timeout",
+        "5b236c86-1e58-48e4-8241-a7b6a9e2fb4f": "timeout now?",
+        "c8a9da4b-1e1c-4dca-b3cb-4b887ba40981": "maybe now instead?",
+        "aa7a00ff-7d8b-4422-b34c-07ccbd8bc22a": "is it timing out yet?",
+        "591cc2ef-0f7d-489c-bbb2-e8ea0c03ceda": "maybe maybe not",
+        "c3fe6a89-4c49-4ee9-bf8a-8993c9a2407b": "how about now?",
+        "d9797592-0aa3-4a88-ba90-227b41079ea1": "yes maybe so?",
+        "2a65c9b5-0087-4b44-a01c-a13f9ab2ed8e": "no maybe not",
+        "7a634fa9-9cc5-4bb3-a38b-0b0e31b459ae": "time out plz",
+        "3d88d039-8781-4cd8-b19e-09a377602b9e": "time out time out",
+        "ffd441d9-55ba-4506-9bfc-ccb67c930380": "plz timeout so i can see what happens",
+        "70dce770-70a7-4d1b-aa0c-403d6cde7be6": "dang AI models...",
+        "e02492ed-f067-4d57-8460-d5f098ba1664": "gosh golly gee",
+        "569799d4-440b-4ff3-b3fd-ea7bf800e3d6": "does t5 translate slang?"
+    }
+}
