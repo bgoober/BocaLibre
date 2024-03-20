@@ -1,6 +1,6 @@
 from uagents import Agent, Context, Protocol, Model
 from uagents.setup import fund_agent_if_low
-import os, ast, threading, time, uuid
+import os, ast, threading, time, uuid, asyncio
 
 
 ### Messages ###
@@ -92,7 +92,10 @@ user = Agent(
 fund_agent_if_low(user.wallet.address())
 
 
-import uuid
+@user.on_event("startup")
+async def startup(ctx: Context):
+    # Start a new thread that prompts for user input every 30 seconds
+    threading.Thread(target=prompt_user_input_periodically, args=(ctx,)).start()
 
 
 @user.on_event("startup")
@@ -113,14 +116,19 @@ async def prompt_user_input(ctx: Context):
     ctx.storage.set("user_inputs", user_inputs)
 
     # Format the input text
-    input_text = "translate English to French: " + user_input
+    input_text = (
+        "translate " + NATIVE_LANGUAGE + " to " + TARGET_LANGUAGE + ": " + user_input
+    )
 
     # Send a TranslationRequest with the user's input and the unique identifier
-    await ctx.send(T5_BASE_AGENT_ADDRESS, TranslationRequest(text=input_text, id=input_id))
+    await ctx.send(
+        T5_BASE_AGENT_ADDRESS, TranslationRequest(text=input_text, id=input_id)
+    )
 
-def wait_for_user_input(ctx):
-    # Wait for 2 minutes
-    time.sleep(30)
+
+async def wait_for_user_input(ctx):
+    # Wait for 30 seconds
+    await asyncio.sleep(30)
 
     # Prompt the user for input
     user_input = input("Enter a message: ")
@@ -128,8 +136,12 @@ def wait_for_user_input(ctx):
     # Generate a unique identifier for this input
     input_id = str(uuid.uuid4())
 
-    # Get the dictionary of user inputs from the context storage
-    user_inputs = ctx.storage.get("user_inputs", {})
+    # Try to get the dictionary of user inputs from the context storage
+    try:
+        user_inputs = ctx.storage.get("user_inputs")
+    except KeyError:
+        # If the key is not found, use an empty dictionary as the default value
+        user_inputs = {}
 
     # Store the user's input in the dictionary with the unique identifier
     user_inputs[input_id] = user_input
@@ -138,10 +150,12 @@ def wait_for_user_input(ctx):
     ctx.storage.set("user_inputs", user_inputs)
 
     # Format the input text
-    input_text = "translate " + NATIVE_LANGUAGE + " to " + TARGET_LANGUAGE + ": " + user_input
+    input_text = (
+        "translate " + NATIVE_LANGUAGE + " to " + TARGET_LANGUAGE + ": " + user_input
+    )
 
     # Send a TranslationRequest with the user's input
-    ctx.send(T5_BASE_AGENT_ADDRESS, TranslationRequest(text=input_text, id=input_id))
+    await ctx.send(T5_BASE_AGENT_ADDRESS, TranslationRequest(text=input_text, id=input_id))
 
 
 @user.on_message(model=BocaMessage)
@@ -158,8 +172,17 @@ async def handle_boca_message(ctx: Context, sender: str, message: BocaMessage):
     messages.append(message)
     ctx.storage.set("messages", messages)
 
-    # Start a new thread that waits for user input and then sends a TranslationRequest
-    threading.Thread(target=wait_for_user_input, args=(ctx,)).start()
+    # Prompt for user input immediately
+    wait_for_user_input(ctx)
+
+
+def prompt_user_input_periodically(ctx):
+    while True:
+        # Wait for 30 seconds
+        time.sleep(30)
+
+        # Prompt the user for input
+        wait_for_user_input(ctx)
 
 
 # decorate the user agent to store the partner from the MatchResponse message from the match_maker agent
