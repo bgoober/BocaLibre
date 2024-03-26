@@ -1,6 +1,6 @@
 from uagents import Agent, Context, Protocol, Model
 from uagents.setup import fund_agent_if_low
-import os, ast, threading, uuid, asyncio, math, time
+import os, ast, threading, uuid, asyncio, math
 
 
 ### Messages ###
@@ -50,11 +50,9 @@ class BocaMessage(Model):
 
     def to_dict(self):
         return {
-
-        'sender': self.sender,
-        'native': self.native,
-        'translation': self.translation,
-
+            "sender": self.sender,
+            "native": self.native,
+            "translation": self.translation,
         }
 
 
@@ -65,15 +63,15 @@ if T5_BASE_AGENT_ADDRESS == "T5_BASE_AGENT_ADDRESS":
         "You need to provide an T5_BASE_AGENT_ADDRESS, by exporting env, check README file"
     )
 
-# BOCA_MATCH_MAKER = os.getenv("BOCA_MATCH_MAKER", "BOCA_MATCH_MAKER")
+BOCA_MATCH_MAKER = os.getenv("BOCA_MATCH_MAKER", "BOCA_MATCH_MAKER")
 
-# if BOCA_MATCH_MAKER == "BOCA_MATCH_MAKER":
-#    raise Exception(
-#        "You need to provide an BOCA_MATCH_MAKER, by exporting env, check README file"
-#    )
+if BOCA_MATCH_MAKER == "BOCA_MATCH_MAKER":
+    raise Exception(
+        "You need to provide an BOCA_MATCH_MAKER, by exporting env, check README file"
+    )
 
 
-PARTNER = "agent1qf94pcajt0permyeshwzr4neuj90gslg2fp3cwjen3clhfm0rvnzyrtj5z8"
+# PARTNER = "agent1qf94pcajt0permyeshwzr4neuj90gslg2fp3cwjen3clhfm0rvnzyrtj5z8"
 
 # Define user agent with specified parameters
 user = Agent(
@@ -130,6 +128,32 @@ async def startup(ctx: Context):
 
     # Start a new thread that prompts for user input
     threading.Thread(target=prompt_for_user_input, args=(ctx,), daemon=True).start()
+
+
+@user.on_event("startup")
+async def request_match(ctx: Context):
+    # on startup, after the user has set their native and target languages, send a MatchRequest to the match_maker agent
+    native_language = ctx.storage.get("native_language")
+    target_language = ctx.storage.get("target_language")
+    try:
+        if BOCA_MATCH_MAKER:
+            await ctx.send(
+                BOCA_MATCH_MAKER,
+                MatchRequest(
+                    native_language=native_language, target_language=target_language
+                ),
+            )
+            ctx.logger.info(f"Sent MatchRequest to {BOCA_MATCH_MAKER}")
+    except Exception as e:
+        ctx.logger.info(f"Failed to reach match_maker: {e}")
+        await asyncio.sleep(10)
+        await ctx.send(
+            BOCA_MATCH_MAKER,
+            MatchRequest(
+                native_language=native_language, target_language=target_language
+            ),
+        )
+        ctx.logger.info(f"Retrying MatchRequest to {BOCA_MATCH_MAKER} after 10 seconds")
 
 
 async def handle_user_input(ctx: Context, user_input: str):
@@ -208,7 +232,14 @@ async def handle_user_input(ctx: Context, user_input: str):
     return input_id
 
 
-@user.on_message(model=BocaMessage)
+
+
+
+# Create an instance of Protocol with a label "T5BaseModelUser"
+t5_base_user = Protocol(name="T5BaseModelUser", version="0.0.1")
+
+
+@t5_base_user.on_message(model=BocaMessage)
 async def handle_boca_message(ctx: Context, sender: str, message: BocaMessage):
     ctx.logger.info(f"Received BocaMessage from {sender}:")
     ctx.logger.info(f"Native: {message.native}")
@@ -223,17 +254,12 @@ async def handle_boca_message(ctx: Context, sender: str, message: BocaMessage):
 
 
 # decorate the user agent to store the partner from the MatchResponse message from the match_maker agent
-@user.on_message(model=MatchResponse)
+@t5_base_user.on_message(model=MatchResponse)
 async def store_partner(ctx: Context, sender: str, message: MatchResponse):
     ctx.storage.set("partner", message.partner)
     ctx.logger.info(f"Stored partner: {message.partner}")
 
-
-# Create an instance of Protocol with a label "T5BaseModelUser"
-t5_base_user = Protocol(name="T5BaseModelUser", version="0.0.1")
-
-
-@user.on_message(model=TranslationResponse)
+@t5_base_user.on_message(model=TranslationResponse)
 async def handle_response_message(
     ctx: Context, sender: str, response: TranslationResponse
 ):
@@ -258,10 +284,15 @@ async def handle_response_message(
         ctx.storage.set("user_inputs_queue", user_inputs_queue)
         ctx.logger.info(f"Removed message with id {response.id} from the queue")
 
+    # Get the partner from the context storage
+    PARTNER = ctx.storage.get("partner")
+
     if PARTNER:
         await ctx.send(
             PARTNER,
-            BocaMessage(sender=ctx.address, native=native_text, translation=translation),
+            BocaMessage(
+                sender=ctx.address, native=native_text, translation=translation
+            ),
         )
         ctx.logger.info(f"Sent BocaMessage to {PARTNER}")
 
@@ -316,8 +347,7 @@ async def handle_error(ctx: Context, sender: str, error: Error):
 user.include(t5_base_user, publish_manifest=False)
 
 
-
 # TODO: The AI model is not translating German to English. It is returning the same text as the input.
 # The prefixes that we used for translating English to another language seem to not be working for a non-English
 # native language to a different language. We need to update the prefixes to handle this case, maybe?
-# It is unknown how the AI model is accepting non-english to something else. 
+# It is unknown how the AI model is accepting non-english to something else.

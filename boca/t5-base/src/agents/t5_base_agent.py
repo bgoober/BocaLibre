@@ -44,6 +44,18 @@ class Message(Model):
     message: str
 
 
+class BocaMessage(Model):
+    sender: str
+    native: str
+    translation: str
+
+    def to_dict(self):
+        return {
+            "sender": self.sender,
+            "native": self.native,
+            "translation": self.translation,
+        }
+
 
 # Get the HUGGING_FACE_ACCESS_TOKEN from environment variable or default to a placeholder string if not found.
 HUGGING_FACE_ACCESS_TOKEN = os.getenv(

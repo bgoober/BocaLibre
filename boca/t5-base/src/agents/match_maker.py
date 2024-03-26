@@ -8,10 +8,12 @@ import asyncio, time
 
 class TranslationRequest(Model):
     text: str
+    id: str
 
 
 class TranslationResponse(Model):
     text: str
+    id: str
 
 
 class Error(Model):
@@ -40,6 +42,18 @@ class UpdateMatchRequestResponse(Model):
 class Message(Model):
     message: str
 
+
+class BocaMessage(Model):
+    sender: str
+    native: str
+    translation: str
+
+    def to_dict(self):
+        return {
+            "sender": self.sender,
+            "native": self.native,
+            "translation": self.translation,
+        }
 
 
 match_maker = Agent(
@@ -75,7 +89,9 @@ async def cleanup_match_queue(ctx: Context):
         while True:
             await asyncio.sleep(3600)  # Wait for 1 hour
             async with lock:
-                match_queue = ctx.storage.get("match_queue", {})
+                match_queue = ctx.storage.get("match_queue")
+                if match_queue is None:
+                    match_queue = {}
                 current_time = time.time()
                 for sender, match in list(match_queue.items()):
                     # If the match request is more than 24 hours old, remove it
@@ -87,16 +103,14 @@ async def cleanup_match_queue(ctx: Context):
 
 
 
-
-# BocaLibre MatchMaker Protocol, designed to be a hosted service on agentverse.ai
-
 lock = asyncio.Lock()
 
-
+# Agent section
 
 @match_maker.on_event("startup")
 async def clear_set_storage(ctx: Context):
     ctx.storage.set("match_queue", {})
+
 
 # Start the cleanup function when the agent starts
 @match_maker.on_event("startup")
@@ -105,15 +119,20 @@ async def startup(ctx: Context):
     ctx.storage.set("match_queue", {})
 
 
+# Protocol section
+
 boca_match_maker = Protocol(name="BocaMatchMaker", version="0.0.1")
 
 
 # upon receiving a MatchRequest message, add the agent adress of the sender, the native language and the target language from the sender's message to the match_queue
+@boca_match_maker.on_message(model=MatchRequest)
 async def handle_match_request(ctx: Context, sender: str, message: MatchRequest):
     try:
         ctx.logger.info(f"Received MatchRequest from {sender}.")
         async with lock:
-            match_queue = ctx.storage.get("match_queue", {})
+            match_queue = ctx.storage.get("match_queue")
+            if match_queue is None:
+                match_queue = {}
 
             # check if the sender agent is already in the match_queue, and if so, reject the request
             if sender in match_queue:
@@ -130,21 +149,21 @@ async def handle_match_request(ctx: Context, sender: str, message: MatchRequest)
             }
 
             ctx.storage.set("match_queue", match_queue)
-            ctx.send(sender, Message(message="Match request added to queue."))
+            await ctx.send(sender, Message(message="Match request added to queue."))
 
         # the MatchResponse message is sent when two users are matched. A match occurs when the 1st user's native language is the 2nd user's target language and vice versa
         # the address of the 1st user and their native language are sent to the 2nd user, and vice versa
         # once the two user's are matched, they are removed from the match_queue in storage
         match1, match2 = find_match(match_queue)
         if match1 and match2:
-            ctx.send(
+            await ctx.send(
                 match1["agent"],
                 MatchResponse(
                     partner=match2["agent"],
                     partner_native_language=match2["native_language"],
                 ),
             )
-            ctx.send(
+            await ctx.send(
                 match2["agent"],
                 MatchResponse(
                     partner=match1["agent"],
@@ -191,4 +210,3 @@ async def handle_update_match_request(
 match_maker.include(boca_match_maker, publish_manifest=False)
 
 fund_agent_if_low(match_maker.wallet.address())
-
