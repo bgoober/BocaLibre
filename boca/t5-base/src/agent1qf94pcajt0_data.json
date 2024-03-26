@@ -1,22 +1,34 @@
 {
-    "native_language": "German",
-    "target_language": "English",
+    "native_language": "Romanian",
+    "target_language": "French",
     "messages": {
         "agent1qwzud7wkclt4akmfpancaz6seglrkxpjj69pycy8m32dd88rw5eys3nlgpd": {
             "sender": "agent1qwzud7wkclt4akmfpancaz6seglrkxpjj69pycy8m32dd88rw5eys3nlgpd",
-            "native": "How are you today?",
-            "translation": "Wie sind Sie heute?"
+            "native": "hello there neighbor",
+            "translation": "Hallo Nachbarn"
         }
     },
     "user_inputs_queue": {},
     "user_inputs_store": {
         "2e9195c9-9c12-4a0f-9a3e-26e9552f2459": "Hallo!",
         "34eb52f1-61ff-4ca1-86cd-fdc6b7845d80": "guten tag mein fruend",
-        "b3f8ed54-36b6-4591-9d16-5cc1e3ce0c60": "Hallo mein Freund, wie geht es dir?"
+        "b3f8ed54-36b6-4591-9d16-5cc1e3ce0c60": "Hallo mein Freund, wie geht es dir?",
+        "24bdf09c-740f-49a2-b13a-d9e632fcdd64": "Hallo Nachbarn",
+        "48b80bd9-d86c-4dba-91dc-33d0ca9467b9": "Salut prietenul meu ce mai faci?",
+        "26008a5d-bc0d-4aa5-b56c-0b9ad1e4b7fe": "\u001b[A",
+        "ea7920f7-6d33-48ca-ae1d-98521005c8b4": "Salut prietenul meu ce mai faci?",
+        "846b533a-0922-462a-9ba6-ed1fe088bb47": "Salut prietenul meu ce mai faci?",
+        "ac5475e3-f2cc-47fb-8a43-a4406ef997a9": "Salut prietenul meu ce mai faci?"
     },
     "sent_message_ids": [
         "2e9195c9-9c12-4a0f-9a3e-26e9552f2459",
         "34eb52f1-61ff-4ca1-86cd-fdc6b7845d80",
-        "b3f8ed54-36b6-4591-9d16-5cc1e3ce0c60"
+        "b3f8ed54-36b6-4591-9d16-5cc1e3ce0c60",
+        "24bdf09c-740f-49a2-b13a-d9e632fcdd64",
+        "48b80bd9-d86c-4dba-91dc-33d0ca9467b9",
+        "26008a5d-bc0d-4aa5-b56c-0b9ad1e4b7fe",
+        "ea7920f7-6d33-48ca-ae1d-98521005c8b4",
+        "846b533a-0922-462a-9ba6-ed1fe088bb47",
+        "ac5475e3-f2cc-47fb-8a43-a4406ef997a9"
     ]
 }

@@ -210,9 +210,9 @@ async def handle_user_input(ctx: Context, user_input: str):
 
 @partner.on_message(model=BocaMessage)
 async def handle_boca_message(ctx: Context, sender: str, message: BocaMessage):
-    ctx.logger.info(
-        f"Received BocaMessage from {sender}: {message.native} --> {message.translation}"
-    )
+    ctx.logger.info(f"Received BocaMessage from {sender}:")
+    ctx.logger.info(f"Native: {message.native}")
+    ctx.logger.info(f"Translation: {message.translation}")
     # add the BocaMessage to the storage as a dictionary with sender's address as the key
     messages = ctx.storage.get("messages")
     if messages is None:
@@ -314,3 +314,10 @@ async def handle_error(ctx: Context, sender: str, error: Error):
 
 # publish_manifest will make the protocol details available on agentverse.
 partner.include(t5_base_user, publish_manifest=False)
+
+
+
+# TODO: The AI model is not translating German to English. It is returning the same text as the input.
+# The prefixes that we used for translating English to another language seem to not be working for a non-English
+# native language to a different language. We need to update the prefixes to handle this case, maybe?
+# It is unknown how the AI model is accepting non-english to something else. 
