@@ -41,10 +41,6 @@ class Message(Model):
     message: str
 
 
-class BocaMessage(Model):
-    native: str
-    translation: str
-
 
 match_maker = Agent(
     name="match_maker", port=8003, endpoint=["http://127.0.0.1:8003/submit"]

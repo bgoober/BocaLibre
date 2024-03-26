@@ -44,8 +44,18 @@ class Message(Model):
 
 
 class BocaMessage(Model):
+    sender: str
     native: str
     translation: str
+
+    def to_dict(self):
+        return {
+
+        'sender': self.sender,
+        'native': self.native,
+        'translation': self.translation,
+
+        }
 
 
 T5_BASE_AGENT_ADDRESS = os.getenv("T5_BASE_AGENT_ADDRESS", "T5_BASE_AGENT_ADDRESS")
@@ -63,7 +73,7 @@ if T5_BASE_AGENT_ADDRESS == "T5_BASE_AGENT_ADDRESS":
 #    )
 
 
-PARTNER = "agent1q0nflz2ll4027d5ufzte9cgmpjzwnvuy87rltdnppzcp7vteyzpp7vy209p"
+PARTNER = "agent1qf94pcajt0permyeshwzr4neuj90gslg2fp3cwjen3clhfm0rvnzyrtj5z8"
 
 # Define user agent with specified parameters
 user = Agent(
@@ -203,13 +213,12 @@ async def handle_boca_message(ctx: Context, sender: str, message: BocaMessage):
     ctx.logger.info(
         f"Received BocaMessage from {sender}: {message.native} --> {message.translation}"
     )
-    # add the BocaMessage to the storage as a list with indices for each message received chronologically
-    try:
-        messages = ctx.storage.get("messages")
-    except KeyError:
-        # If the key is not found, use an empty list as the default value
-        messages = []
-    messages.append(message)
+    # add the BocaMessage to the storage as a dictionary with sender's address as the key
+    messages = ctx.storage.get("messages")
+    if messages is None:
+        # If the key is not found, use an empty dictionary as the default value
+        messages = {}
+    messages[sender] = message.to_dict()  # convert the BocaMessage object to a dict
     ctx.storage.set("messages", messages)
 
 
@@ -252,7 +261,7 @@ async def handle_response_message(
     if PARTNER:
         await ctx.send(
             PARTNER,
-            BocaMessage(native=native_text, translation=translation),
+            BocaMessage(sender=ctx.address, native=native_text, translation=translation),
         )
         ctx.logger.info(f"Sent BocaMessage to {PARTNER}")
 

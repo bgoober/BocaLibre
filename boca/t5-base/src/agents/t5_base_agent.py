@@ -44,10 +44,6 @@ class Message(Model):
     message: str
 
 
-class BocaMessage(Model):
-    native: str
-    translation: str
-
 
 # Get the HUGGING_FACE_ACCESS_TOKEN from environment variable or default to a placeholder string if not found.
 HUGGING_FACE_ACCESS_TOKEN = os.getenv(

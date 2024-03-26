@@ -1,0 +1,22 @@
+{
+    "native_language": "German",
+    "target_language": "English",
+    "messages": {
+        "agent1qwzud7wkclt4akmfpancaz6seglrkxpjj69pycy8m32dd88rw5eys3nlgpd": {
+            "sender": "agent1qwzud7wkclt4akmfpancaz6seglrkxpjj69pycy8m32dd88rw5eys3nlgpd",
+            "native": "How are you today?",
+            "translation": "Wie sind Sie heute?"
+        }
+    },
+    "user_inputs_queue": {},
+    "user_inputs_store": {
+        "2e9195c9-9c12-4a0f-9a3e-26e9552f2459": "Hallo!",
+        "34eb52f1-61ff-4ca1-86cd-fdc6b7845d80": "guten tag mein fruend",
+        "b3f8ed54-36b6-4591-9d16-5cc1e3ce0c60": "Hallo mein Freund, wie geht es dir?"
+    },
+    "sent_message_ids": [
+        "2e9195c9-9c12-4a0f-9a3e-26e9552f2459",
+        "34eb52f1-61ff-4ca1-86cd-fdc6b7845d80",
+        "b3f8ed54-36b6-4591-9d16-5cc1e3ce0c60"
+    ]
+}
