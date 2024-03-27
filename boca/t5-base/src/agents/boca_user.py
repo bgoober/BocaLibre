@@ -1,7 +1,7 @@
 from uagents import Agent, Context, Protocol, Model
 from uagents.setup import fund_agent_if_low
 import os, ast, threading, uuid, asyncio, math
-
+from agents.match_maker import boca_match_maker
 
 ### Messages ###
 
@@ -341,6 +341,11 @@ async def handle_error(ctx: Context, sender: str, error: Error):
                 TranslationRequest(id=last_sent_message_id, text=input_text),
             )
             ctx.logger.info(f"Retried TranslationRequest to {T5_BASE_AGENT_ADDRESS}")
+
+
+@t5_base_user.on_message(model=Message)
+async def handle_message(ctx: Context, sender: str, message: Message):
+    ctx.logger.info(f"Received message from {sender}: {message.message}")
 
 
 # publish_manifest will make the protocol details available on agentverse.

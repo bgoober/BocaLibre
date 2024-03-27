@@ -343,6 +343,11 @@ async def handle_error(ctx: Context, sender: str, error: Error):
             ctx.logger.info(f"Retried TranslationRequest to {T5_BASE_AGENT_ADDRESS}")
 
 
+@t5_base_user.on_message(model=Message)
+async def handle_message(ctx: Context, sender: str, message: Message):
+    ctx.logger.info(f"Received message from {sender}: {message.message}")
+
+
 # publish_manifest will make the protocol details available on agentverse.
 partner.include(t5_base_user, publish_manifest=False)
 

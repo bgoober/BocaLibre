@@ -1,22 +1,4 @@
 {
     "native_language": "English",
-    "target_language": "German",
-    "user_inputs_queue": {},
-    "user_inputs_store": {
-        "1f5220bc-a312-42c5-9413-0cfa887746be": "Hello!",
-        "39e12d31-d041-416c-96de-f6617dba51f6": "How are you today?",
-        "529e9331-4839-477d-b4d8-cb27649e3334": "hello there neighbor"
-    },
-    "sent_message_ids": [
-        "1f5220bc-a312-42c5-9413-0cfa887746be",
-        "39e12d31-d041-416c-96de-f6617dba51f6",
-        "529e9331-4839-477d-b4d8-cb27649e3334"
-    ],
-    "messages": {
-        "agent1qf94pcajt0permyeshwzr4neuj90gslg2fp3cwjen3clhfm0rvnzyrtj5z8": {
-            "sender": "agent1qf94pcajt0permyeshwzr4neuj90gslg2fp3cwjen3clhfm0rvnzyrtj5z8",
-            "native": "Salut prietenul meu ce mai faci?",
-            "translation": "traduce romana in franceza: Salut prietenul meu ce mai faci?"
-        }
-    }
+    "target_language": "German"
 }
