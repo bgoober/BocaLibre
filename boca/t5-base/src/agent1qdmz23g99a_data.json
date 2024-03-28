@@ -1,9 +1,3 @@
 {
-    "match_queue": {
-        "agent1qf94pcajt0permyeshwzr4neuj90gslg2fp3cwjen3clhfm0rvnzyrtj5z8": {
-            "native_language": "German",
-            "target_language": "English",
-            "timestamp": 1711512701.38588
-        }
-    }
+    "match_queue": {}
 }

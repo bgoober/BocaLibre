@@ -1,7 +1,7 @@
 from uagents import Agent, Context, Protocol, Model
 from uagents.setup import fund_agent_if_low
 import os, ast, threading, uuid, asyncio, math
-from agents.match_maker import boca_match_maker
+
 
 ### Messages ###
 
@@ -232,9 +232,6 @@ async def handle_user_input(ctx: Context, user_input: str):
     return input_id
 
 
-
-
-
 # Create an instance of Protocol with a label "T5BaseModelUser"
 t5_base_user = Protocol(name="T5BaseModelUser", version="0.0.1")
 
@@ -258,6 +255,7 @@ async def handle_boca_message(ctx: Context, sender: str, message: BocaMessage):
 async def store_partner(ctx: Context, sender: str, message: MatchResponse):
     ctx.storage.set("partner", message.partner)
     ctx.logger.info(f"Stored partner: {message.partner}")
+
 
 @t5_base_user.on_message(model=TranslationResponse)
 async def handle_response_message(

@@ -1,4 +1,19 @@
 {
     "native_language": "German",
-    "target_language": "English"
+    "target_language": "English",
+    "partner": "agent1qwzud7wkclt4akmfpancaz6seglrkxpjj69pycy8m32dd88rw5eys3nlgpd",
+    "user_inputs_queue": {},
+    "user_inputs_store": {
+        "195ca7d9-b123-4e3f-ab58-dc6d79c8d781": "hallo mein freund"
+    },
+    "sent_message_ids": [
+        "195ca7d9-b123-4e3f-ab58-dc6d79c8d781"
+    ],
+    "messages": {
+        "agent1qwzud7wkclt4akmfpancaz6seglrkxpjj69pycy8m32dd88rw5eys3nlgpd": {
+            "sender": "agent1qwzud7wkclt4akmfpancaz6seglrkxpjj69pycy8m32dd88rw5eys3nlgpd",
+            "native": "hello friend",
+            "translation": "Hallo Freund"
+        }
+    }
 }
