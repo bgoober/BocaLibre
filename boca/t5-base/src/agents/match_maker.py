@@ -134,14 +134,7 @@ async def handle_match_request(ctx: Context, sender: str, message: MatchRequest)
         if match_queue is None:
             match_queue = {}
 
-        # check if the sender agent is already in the match_queue, and if so, reject the request
-        if sender in match_queue:
-            ctx.logger.info(
-                "User already in queue. Please send an UpdateMatchRequest to change your match request settings."
-            )
-            return
-
-        # Add the sender to the match_queue with their native and target languages
+        # Update the sender's entry in the match_queue with their new native and target languages
         match_queue[sender] = {
             "native_language": message.native_language,
             "target_language": message.target_language,
@@ -152,11 +145,13 @@ async def handle_match_request(ctx: Context, sender: str, message: MatchRequest)
         await ctx.send(sender, Message(message="Match request added to queue."))
 
         ctx.logger.info(f"Match queue updated.")
-        ctx.logger.info(f"Match queue: {match_queue}")
+        ctx.logger.info(f"Match queue length: {len(match_queue)}")
 
         # Check the length of the match_queue before running find_match
         if len(match_queue) < 2:
             ctx.logger.info("Not enough users in the queue to find a match.")
+            ctx.logger.info(f"Match queue length: {len(match_queue)}")
+
             return
 
         # the MatchResponse message is sent when two users are matched. A match occurs when the 1st user's native language is the 2nd user's target language and vice versa
@@ -178,8 +173,10 @@ async def handle_match_request(ctx: Context, sender: str, message: MatchRequest)
                 ),
             )
             ctx.logger.info(f"Match found for {match1['agent']} and {match2['agent']}.")
+            ctx.logger.info(f"Match queue length: {len(match_queue)}")
         else:
             ctx.logger.info("No match found.")
+            ctx.logger.info(f"Match queue length: {len(match_queue)}")
 
 
 # upon receiving an UpdateMatchRequest message, the agent updates the match_queue with the new native language and target language from the sender's message

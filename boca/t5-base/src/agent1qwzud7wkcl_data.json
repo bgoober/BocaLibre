@@ -1,19 +1,23 @@
 {
     "native_language": "English",
-    "target_language": "German",
+    "target_language": "French",
     "partner": "agent1qf94pcajt0permyeshwzr4neuj90gslg2fp3cwjen3clhfm0rvnzyrtj5z8",
     "user_inputs_queue": {},
     "user_inputs_store": {
-        "abaf587e-5ded-4c5d-93fa-a49e4d529451": "hello friend"
+        "abaf587e-5ded-4c5d-93fa-a49e4d529451": "hello friend",
+        "0e481cc0-43c0-4ad1-a793-f4a7f28372dc": "Hi!",
+        "70f45310-0d45-4c11-bd92-8c03ac9d0bbe": "hello"
     },
     "sent_message_ids": [
-        "abaf587e-5ded-4c5d-93fa-a49e4d529451"
+        "abaf587e-5ded-4c5d-93fa-a49e4d529451",
+        "0e481cc0-43c0-4ad1-a793-f4a7f28372dc",
+        "70f45310-0d45-4c11-bd92-8c03ac9d0bbe"
     ],
     "messages": {
         "agent1qf94pcajt0permyeshwzr4neuj90gslg2fp3cwjen3clhfm0rvnzyrtj5z8": {
             "sender": "agent1qf94pcajt0permyeshwzr4neuj90gslg2fp3cwjen3clhfm0rvnzyrtj5z8",
-            "native": "hallo mein freund",
-            "translation": "Deutsch: hallo mein freund"
+            "native": "Bonjour!",
+            "translation": "Anglais: Bonjour!"
         }
     }
 }

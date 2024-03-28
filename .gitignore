@@ -12,4 +12,6 @@ t5-base/src/private_keys.json
 
 boca/t5-base/src/private_keys.json
 
-*/private_keys.json
+private_keys.json
+
+./boca/t5-base/src/private_keys.json
