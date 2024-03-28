@@ -71,8 +71,6 @@ if BOCA_MATCH_MAKER == "BOCA_MATCH_MAKER":
     )
 
 
-# PARTNER = "agent1qf94pcajt0permyeshwzr4neuj90gslg2fp3cwjen3clhfm0rvnzyrtj5z8"
-
 # Define user agent with specified parameters
 user = Agent(
     name="boca_user",
