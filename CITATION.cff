@@ -1,0 +1,18 @@
+- type: article
+  authors:
+    - name: Colin Raffel
+    - name: Noam Shazeer
+    - name: Adam Roberts
+    - name: Katherine Lee
+    - name: Sharan Narang
+    - name: Michael Matena
+    - name: Yanqi Zhou
+    - name: Wei Li
+    - name: Peter J. Liu
+  title: Exploring the Limits of Transfer Learning with a Unified Text-to-Text Transformer
+  journal: Journal of Machine Learning Research
+  year: 2020
+  volume: 21
+  number: 140
+  pages: 1-67
+  url: http://jmlr.org/papers/v21/20-074.html

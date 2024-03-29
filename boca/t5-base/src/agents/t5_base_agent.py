@@ -121,4 +121,4 @@ async def handle_request(ctx: Context, sender: str, request: TranslationRequest)
 
 
 # publish_manifest will make the protocol details available on agentverse.
-agent.include(t5_base_agent, publish_manifest=True)
+agent.include(t5_base_agent, publish_manifest=False)
