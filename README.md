@@ -1,6 +1,6 @@
 # BocaLibre
 
-An agent-based, peer-to-peer, chat/social messaging application, intended for users that speak differing native languages.
+An agent-based, peer-to-peer, chat/social messaging application, intended for users that speak differing native languages. Built on Fetch.ai's uAgents framework and t5-base integration.
 
 Currently, the application is based on the t5-base integration in fetch.ai's uAgents repository. It hits HuggingFace's hosted t5-base model for translations. Unfortunately, the t5-base only works with four languages -- English, German, French, and Romanian. It seems to only be capable of translating FROM English to another language, but not back. Nor does it seem capable of translating from a non-English language to a second non-English language; or, at least it doesn't do it very well. In fact, slang would be tricky and likely confuse the model, or not be translated at all. Proper grammar is essential as input.
 
