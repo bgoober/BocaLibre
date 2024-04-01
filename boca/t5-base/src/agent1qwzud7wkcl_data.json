@@ -1,23 +1,21 @@
 {
     "native_language": "English",
-    "target_language": "French",
+    "target_language": "German",
     "partner": "agent1qf94pcajt0permyeshwzr4neuj90gslg2fp3cwjen3clhfm0rvnzyrtj5z8",
     "user_inputs_queue": {},
     "user_inputs_store": {
-        "abaf587e-5ded-4c5d-93fa-a49e4d529451": "hello friend",
-        "0e481cc0-43c0-4ad1-a793-f4a7f28372dc": "Hi!",
-        "70f45310-0d45-4c11-bd92-8c03ac9d0bbe": "hello"
+        "7c78b825-35ac-41e5-aae5-1c9e1731eb89": "Hello, how are you today?",
+        "06148124-71c0-4a96-8227-d58d4745a207": "Would you like to go to the park?"
     },
     "sent_message_ids": [
-        "abaf587e-5ded-4c5d-93fa-a49e4d529451",
-        "0e481cc0-43c0-4ad1-a793-f4a7f28372dc",
-        "70f45310-0d45-4c11-bd92-8c03ac9d0bbe"
+        "7c78b825-35ac-41e5-aae5-1c9e1731eb89",
+        "06148124-71c0-4a96-8227-d58d4745a207"
     ],
     "messages": {
         "agent1qf94pcajt0permyeshwzr4neuj90gslg2fp3cwjen3clhfm0rvnzyrtj5z8": {
             "sender": "agent1qf94pcajt0permyeshwzr4neuj90gslg2fp3cwjen3clhfm0rvnzyrtj5z8",
-            "native": "Bonjour!",
-            "translation": "Anglais: Bonjour!"
+            "native": "Hallo, das ist gut, ya.",
+            "translation": "German: Hallo, das ist gut, ya."
         }
     }
 }
